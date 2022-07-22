@@ -47,10 +47,16 @@ namespace Workspace
             _disposables.Clear();
         }
 
+        void IState<T>.Dispose()
+        {
+            OnDispose();
+        }
+
         protected virtual void OnBegin() { }
         protected virtual void OnUpdate() { }
         protected virtual void OnLateUpdate() { }
         protected virtual void OnEnd() { }
+        protected virtual void OnDispose() { }
 
         #endregion
 

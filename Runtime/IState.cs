@@ -7,5 +7,6 @@ namespace Workspace
         void Update();
         void LateUpdate();
         void End();
+        void Dispose();
     }
 }

@@ -25,6 +25,7 @@ namespace Workspace
         public int UpdateCount;
         public int LateUpdateCount;
         public bool End;
+        public bool Disposed;
     }
 
     sealed class SampleStateOne : PlaceholderState<SampleStateId>
@@ -56,6 +57,11 @@ namespace Workspace
         protected override void OnEnd()
         {
             _context.ResultMap[Id].End = true;
+        }
+
+        protected override void OnDispose()
+        {
+            _context.ResultMap[Id].Disposed = true;
         }
     }
 
@@ -89,6 +95,11 @@ namespace Workspace
         {
             _context.ResultMap[Id].End = true;
         }
+
+        protected override void OnDispose()
+        {
+            _context.ResultMap[Id].Disposed = true;
+        }
     }
 
     sealed class SampleStateThree : PlaceholderState<SampleStateId>
@@ -120,6 +131,11 @@ namespace Workspace
         protected override void OnEnd()
         {
             _context.ResultMap[Id].End = true;
+        }
+
+        protected override void OnDispose()
+        {
+            _context.ResultMap[Id].Disposed = true;
         }
     }
 }

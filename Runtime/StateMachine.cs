@@ -5,11 +5,18 @@ using Zenject;
 
 namespace Workspace
 {
-    class StateMachine<T> : IStateMachine<T>, ITickable, ILateTickable
+    class StateMachine<T> : IStateMachine<T>, IInitializable, ITickable, ILateTickable, IDisposable
     {
+        readonly T _defaultState;
+
         Dictionary<T, IState<T>> _stateMap;
 
         IState<T> _currentState;
+
+        public StateMachine(T defaultState)
+        {
+            _defaultState = defaultState;
+        }
 
         [Inject]
         void Inject(IEnumerable<IState<T>> states)
@@ -28,6 +35,11 @@ namespace Workspace
             _currentState.Begin();
         }
 
+        void IInitializable.Initialize()
+        {
+            ((IStateMachine<T>)this).ChangeState(_defaultState);
+        }
+
         void ITickable.Tick()
         {
             _currentState?.Update();
@@ -36,6 +48,16 @@ namespace Workspace
         void ILateTickable.LateTick()
         {
             _currentState?.LateUpdate();
+        }
+
+        void IDisposable.Dispose()
+        {
+            foreach (var state in _stateMap)
+            {
+                state.Value.Dispose();
+            }
+
+            _stateMap.Clear();
         }
     }
 }
