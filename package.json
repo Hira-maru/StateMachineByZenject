@@ -5,5 +5,5 @@
     "unity": "2021.3",
     "description": "StateMachine By Zenject",
     "license": "MIT",
-    "dependencies": { "com.svermeulen.extenject" }
+    "dependencies": {}
 }
