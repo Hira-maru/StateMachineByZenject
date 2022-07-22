@@ -22,6 +22,8 @@ class SampleState : PlaceHolderState<StateId>
   protected override void OnBegin()
   {
     // base.OnBegin() を呼び出す必要無し
+    // ICollection<IDisposable>を実装しているので、UniRxを使用するのであればAddTo(this)が使える。状態が終了した際にClearされる。
+    Observable.Return(1).Subscribe().AddTo(this);
   }
   
   // コンテキストのUpdateのタイミングで呼び出される(任意)
@@ -61,9 +63,10 @@ class SampleInstaller : Installer
     Container.BindStateMachine<SampleStateId>(SampleStateId.State1);
     
     // 以下は少しテクニカルな補足
-    // 現在のコンテキストにバインドされる型はIStateMachine<>,ITickable,ILateTickableの３つで、残りはサブコンテナにバインドされている。
+    // 現在のコンテキストにバインドされる型はIStateMachine<>,IInitializable,ITickable,ILateTickable,IDisposableのみで、残りはサブコンテナにバインドされている。
+    // 外部から状態を変更したいという特殊なパターンでない限り、IStateMachine<>を参照する必要は無い。
     // ステートマシンが扱う状態はリフレクションによって収集されてサブコンテナにバインドされている。
-    // 外部から状態を変更したいという特殊なパターンでない限り、IStateMachine<>を参照する必要はなく、NonLazyで自動的に走り始め、コンテキストの破棄と共に停止する。
+    // ステートマシンはNonLazyで自動的に走り始め、コンテキストの破棄と共に停止する。
     // コンテキストが破棄された際にすべての状態のOnDisposeが呼び出される。
     // 現在のコンテキストがサブコンテナの場合、カーネルの設定によってはステートマシンのTickが走らず更新が行われないので注意。
     // 以上のようなことを考えずに使えるように設計したので、考えるより感じて。
