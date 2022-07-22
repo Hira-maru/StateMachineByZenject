@@ -53,7 +53,7 @@ class SampleState : PlaceHolderState<StateId>
 }
 ```
 
-## ステートマシンのインストール
+## ステートマシンのバインド
 ```
 class SampleInstaller : Installer
 {
